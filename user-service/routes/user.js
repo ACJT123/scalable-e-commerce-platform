@@ -12,7 +12,7 @@ router.post("/login", async (req, res) => {
   try {
     const token = await login(email, password);
 
-    res.status(200).send({ token });
+    res.status(200).json({ token });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");
@@ -29,7 +29,7 @@ router.post("/register", async (req, res) => {
   try {
     const token = await register(email, password);
 
-    res.status(200).send({ token });
+    res.status(200).json({ token });
   } catch (error) {
     console.log(error);
     res.status(500).send("Internal Server Error");

@@ -1,5 +1,6 @@
 const User = require("../models/user");
 const { signToken } = require("../libs/jwt");
+const axios = require("axios");
 
 const register = async (email, password) => {
   const isUserExist = await User.findOne({ email });
@@ -12,7 +13,17 @@ const register = async (email, password) => {
 
   await newUser.save();
 
-  const token = signToken({ email });
+  const token = await _signToken(newUser._id);
+
+  return token;
+};
+
+const _signToken = async (userId) => {
+  const response = await axios.post("http://localhost:3000/api/util/jwt/sign", {
+    userId,
+  });
+
+  const token = response.data.token;
 
   return token;
 };
@@ -30,7 +41,7 @@ const login = async (email, password) => {
     throw new Error("Invalid credentials");
   }
 
-  const token = signToken({ email });
+  const token = await _signToken(user._id);
 
   return token;
 };
