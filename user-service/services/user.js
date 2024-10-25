@@ -12,21 +12,17 @@ const register = async (email, password) => {
 
   await newUser.save();
 
-  const token = await _signToken(newUser._id);
-
-  return token;
+  return await _getTokens(user._id);
 };
 
-const _signToken = async (userId) => {
+const _getTokens = async (userId) => {
   const response = await axios.get("http://localhost:80/api/auth/sign", {
     headers: {
       userId,
     },
   });
 
-  const token = response.data.token;
-
-  return token;
+  return response.data;
 };
 
 const login = async (email, password) => {
@@ -42,9 +38,7 @@ const login = async (email, password) => {
     throw new Error("Invalid credentials");
   }
 
-  const token = await _signToken(user._id);
-
-  return token;
+  return await _getTokens(user._id);
 };
 
 module.exports = {

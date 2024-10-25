@@ -1,6 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const { sign, verify } = require("../services/jwt");
+const {
+  verify,
+  generateToken,
+} = require("../services/jwt");
 
 router.get("/sign", (req, res) => {
   const { userid } = req.headers;
@@ -10,8 +13,33 @@ router.get("/sign", (req, res) => {
   }
 
   try {
-    const token = sign(userid);
-    res.status(200).json({ token });
+    const accessToken = generateToken("access", userid);
+    const refreshToken = generateToken("refresh", userid);
+
+    res.status(200).json({
+      accessToken,
+      refreshToken,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send("Internal Server Error");
+  }
+});
+
+router.get("/refresh", (req, res) => {
+  const { token } = req.headers;
+
+  if (!token) {
+    return res.status(400).send("Token is required");
+  }
+
+  try {
+    const { userId } = verify(token);
+
+    const newToken = generateToken("access", userId);
+    res.status(200).json({
+      accessToken: newToken,
+    });
   } catch (error) {
     console.error(error);
     res.status(500).send("Internal Server Error");
@@ -19,7 +47,6 @@ router.get("/sign", (req, res) => {
 });
 
 router.get("/verify", (req, res) => {
-  console.log(req.headers);
   let token = req.header("Authorization");
 
   if (!token) {
@@ -35,13 +62,7 @@ router.get("/verify", (req, res) => {
     console.error(error);
 
     switch (error.name) {
-      case "TokenExpiredError": {
-        // resign the token
-        const { userId } = error.payload;
-        const newToken = sign(userId);
-        return res.status(200).json({ newToken });
-      }
-      case "JsonWebTokenError": {
+      case "TokenExpiredError" || "JsonWebTokenError": {
         return res.status(401).send("Invalid token");
       }
     }
