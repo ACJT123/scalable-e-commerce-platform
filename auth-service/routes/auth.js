@@ -2,15 +2,15 @@ const express = require("express");
 const router = express.Router();
 const { sign, verify } = require("../services/jwt");
 
-router.post("/sign", (req, res) => {
-  const { userId } = req.body;
+router.get("/sign", (req, res) => {
+  const { userid } = req.headers;
 
-  if (!userId) {
+  if (!userid) {
     return res.status(400).send("User ID is required");
   }
 
   try {
-    const token = sign(userId);
+    const token = sign(userid);
     res.status(200).json({ token });
   } catch (error) {
     console.error(error);
@@ -18,7 +18,8 @@ router.post("/sign", (req, res) => {
   }
 });
 
-router.post("/verify", (req, res) => {
+router.get("/verify", (req, res) => {
+  console.log(req.headers);
   let token = req.header("Authorization");
 
   if (!token) {
@@ -35,7 +36,10 @@ router.post("/verify", (req, res) => {
 
     switch (error.name) {
       case "TokenExpiredError": {
-        return res.status(401).send("Token expired");
+        // resign the token
+        const { userId } = error.payload;
+        const newToken = sign(userId);
+        return res.status(200).json({ newToken });
       }
       case "JsonWebTokenError": {
         return res.status(401).send("Invalid token");

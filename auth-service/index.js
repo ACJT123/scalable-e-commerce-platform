@@ -8,8 +8,8 @@ app.use(express.json());
 app.use(helmet());
 
 // routes
-const jwtRoutes = require("./routes/jwt");
-app.use("/jwt", jwtRoutes);
+const authRoutes = require("./routes/auth");
+app.use("/", authRoutes);
 
 app.listen(3007, () => {
   console.log(`Listening on http://localhost:${3007}`);
