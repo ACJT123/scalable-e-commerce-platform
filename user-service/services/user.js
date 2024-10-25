@@ -18,8 +18,10 @@ const register = async (email, password) => {
 };
 
 const _signToken = async (userId) => {
-  const response = await axios.post("http://localhost:80/api/util/jwt/sign", {
-    userId,
+  const response = await axios.get("http://localhost:80/api/auth/sign", {
+    headers: {
+      userId,
+    },
   });
 
   const token = response.data.token;
