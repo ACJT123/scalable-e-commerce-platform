@@ -1,5 +1,4 @@
 const User = require("../models/user");
-const { signToken } = require("../libs/jwt");
 const axios = require("axios");
 
 const register = async (email, password) => {
@@ -19,7 +18,7 @@ const register = async (email, password) => {
 };
 
 const _signToken = async (userId) => {
-  const response = await axios.post("http://localhost:3000/api/util/jwt/sign", {
+  const response = await axios.post("http://localhost:80/api/util/jwt/sign", {
     userId,
   });
 
