@@ -40,6 +40,9 @@ const getSession = async (token: string) => {
     mode: "payment",
     success_url: process.env.STRIPE_SUCCESS_URL,
     cancel_url: process.env.STRIPE_CANCEL_URL,
+    metadata: {
+      userId: cart.userId,
+    },
   });
 
   return session;
