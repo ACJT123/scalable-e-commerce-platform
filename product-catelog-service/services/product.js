@@ -48,6 +48,8 @@ const _product = async (productId) => {
   if (!product) {
     throw new CustomError("Product not found", 404);
   }
+
+  return product;
 };
 
 export { createProduct, getProduct, getProducts, updateProduct, deleteProduct };
