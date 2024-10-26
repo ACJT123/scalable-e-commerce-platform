@@ -42,6 +42,7 @@ const getSession = async (token: string) => {
     cancel_url: process.env.STRIPE_CANCEL_URL,
     metadata: {
       userId: cart.userId,
+      cart: JSON.stringify(cart.products),
     },
   });
 
