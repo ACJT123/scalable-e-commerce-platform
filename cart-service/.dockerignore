@@ -1,0 +1,14 @@
+# Ignore the node_modules directory
+node_modules/
+
+# Ignore all log files
+*.log
+
+# Ignore local configuration files
+.env
+
+# Ignore the Git directory
+.git/
+
+# Ignore all test files
+test/
