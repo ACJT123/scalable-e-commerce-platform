@@ -1,0 +1,111 @@
+version: '3.7'
+
+services:
+  nginx:
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    networks:
+      - e_commerce_proxy
+
+  user_service:
+    build:
+      context: ./user-service
+      args:
+        MONGO_URI: ${MONGO_URI}  # Correct way to pass build args
+    env_file:
+      - ./user-service/.env
+    ports:
+      - "3000:3000"
+    networks:
+      - e_commerce_proxy
+
+  product_catalog_service:
+    build:
+      context: ./product-catalog-service
+      args:
+        MONGO_URI: ${MONGO_URI}  # Correct way to pass build args
+    env_file:
+      - ./product-catalog-service/.env
+    ports:
+      - "3003:3003"
+    networks:
+      - e_commerce_proxy
+
+  auth_service:
+    build:
+      context: ./auth-service
+      args:
+        MONGO_URI: ${MONGO_URI}
+        JWT_SECRET: ${JWT_SECRET}
+    env_file:
+      - ./auth-service/.env
+    ports:
+      - "3007:3007"
+    networks:
+      - e_commerce_proxy
+
+  order_service:
+    build:
+      context: ./order-service
+      args:
+        MONGO_URI: ${MONGO_URI}
+        JWT_SECRET: ${JWT_SECRET}
+    env_file:
+      - ./order-service/.env
+    ports:
+      - "3004:3004"
+    networks:
+      - e_commerce_proxy
+
+  payment_service:
+    build:
+      context: ./payment-service
+      args:
+        MONGO_URI: ${MONGO_URI}
+        JWT_SECRET: ${JWT_SECRET}
+        STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+        STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+        STRIPE_SUCCESS_URL: ${STRIPE_SUCCESS_URL}
+        STRIPE_CANCEL_URL: ${STRIPE_CANCEL_URL}
+    env_file:
+      - ./payment-service/.env
+    ports:
+      - "3005:3005"
+    networks:
+      - e_commerce_proxy
+
+  stripe_webhook:
+      build:
+        context: ./stripe-webhook
+        args:
+          MONGO_URI: ${MONGO_URI}
+          JWT_SECRET: ${JWT_SECRET}
+          STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+          STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+          STRIPE_SUCCESS_URL: ${STRIPE_SUCCESS_URL}
+          STRIPE_CANCEL_URL: ${STRIPE_CANCEL_URL}
+      env_file:
+        - ./stripe-webhook/.env
+      ports:
+        - "3008:3008"
+      networks:
+        - e_commerce_proxy
+
+  cart_service:
+    build:
+      context: ./cart-service
+      args:
+        MONGO_URI: ${MONGO_URI}
+        JWT_SECRET: ${JWT_SECRET}
+    env_file:
+      - ./cart-service/.env
+    ports:
+      - "3002:3002"
+    networks:
+      - e_commerce_proxy
+
+networks:
+  e_commerce_proxy:
+    driver: bridge
