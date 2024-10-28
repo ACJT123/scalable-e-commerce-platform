@@ -26,7 +26,7 @@ const getCart = async (userId) => {
 
 const _getDetails = async (productId) => {
   const response = await axios.get(
-    `http://localhost:80/api/product-catalog/product/${productId}/`
+    `http://nginx/api/product-catalog/product/${productId}/`
   );
 
   return response.data;

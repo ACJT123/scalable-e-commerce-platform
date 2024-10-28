@@ -1,4 +1,4 @@
-const baseUrl = "http://localhost:80/api";
+const baseUrl = "http://nginx/api";
 
 export enum Urls {
   CART_SERVICE = `${baseUrl}/cart`,

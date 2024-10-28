@@ -4,7 +4,7 @@ const axios = require("axios");
 const { getCart, addToCart, clearCart } = require("../services/cart");
 
 const userIdMiddleware = async (req, res, next) => {
-  const response = await axios.get("http://localhost:80/api/auth/verify", {
+  const response = await axios.get("http://nginx/api/auth/verify", {
     headers: {
       Authorization: req.headers.authorization,
     },

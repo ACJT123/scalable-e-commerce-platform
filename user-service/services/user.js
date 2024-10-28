@@ -16,7 +16,7 @@ const register = async (email, password) => {
 };
 
 const _getTokens = async (userId) => {
-  const response = await axios.get("http://localhost:80/api/auth/sign", {
+  const response = await axios.get("http://nginx/api/auth/sign/", {
     headers: {
       userId,
     },
