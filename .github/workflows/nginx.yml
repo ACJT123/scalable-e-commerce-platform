@@ -14,9 +14,25 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Set up Docker
+      - name: Set up Docker
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker.io
+          sudo systemctl start docker
+          sudo systemctl enable docker
+
+      # Install Docker Compose
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+
       # Rebuild the Docker images
       - name: Build
-        run: docker-compose -f docker-compose.yml build
+        run: |
+          cd app  # Navigate to the app directory if docker-compose.yml is located there
+          docker-compose -f docker-compose.yml build
 
       # Deploy to Render only if the branch is 'main'
       - name: Deploy
