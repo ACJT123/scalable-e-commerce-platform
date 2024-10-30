@@ -1,0 +1,27 @@
+name: Nginx CI
+
+on: 
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Rebuild the Docker images
+      - name: Build
+        run: docker-compose -f docker-compose.yml build
+
+      # Deploy to Render only if the branch is 'main'
+      - name: Deploy
+        if: github.ref == 'refs/heads/main'  # Check if the push is to the main branch
+        env:
+          deploy_url: ${{ secrets.RENDER_DEPLOY_HOOK_URL_NGINX }}  # Use the secret for the deployment URL
+        run: |
+          curl -X POST "$deploy_url"  # Make a POST request to the deploy URL
