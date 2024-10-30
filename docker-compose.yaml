@@ -8,6 +8,14 @@ services:
       - "80:80"
     networks:
       - e_commerce_proxy
+    depends_on:
+      - user_service
+      - product_catalog_service
+      - auth_service
+      - order_service
+      - payment_service
+      - stripe_webhook
+      - cart_service
 
   user_service:
     build:
